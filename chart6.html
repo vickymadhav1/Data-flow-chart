@@ -1,0 +1,135 @@
+<html>
+<head>
+<meta charset="utf-8">
+</head>
+<body> 
+ <style>
+.link {
+fill: none;
+stroke: black;
+opacity: 0.45;
+stroke-width: 2.5px;
+}
+path{
+  stroke-dasharray: 20;
+  stroke-dashoffset: 1000;
+  animation-name:dash;
+animation-duration:30s;
+animation-timing-function:linear;
+animation-delay:0.7s;
+animation-iteration-count:infinite;
+animation-direction:forwards;
+
+
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: 1;
+  }
+ 
+}
+.node circle {
+stroke: #fff;
+opacity: 0.9;
+stroke-width: 1.5px;
+}
+.node:not(:hover) .nodetext {
+display: none;
+}
+text {
+font: 10px serif;
+opacity: 0.9;
+pointer-events: none;
+}
+</style>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script> 
+ var width = 500
+height = 500;
+
+var diameter = 500;
+
+var tree = d3.layout.tree()
+.size([360, diameter / 2 - 120])
+.separation(function(a, b) { return (a.parent == b.parent ? 1 : 2) / a.depth; });
+
+var diagonal = d3.svg.diagonal.radial()
+.projection(function(d) { return [d.y, d.x / 180 * Math.PI]; });
+
+var svg = d3.select("body").append("svg")
+.attr("width", width)
+.attr("height", height)
+.attr()
+.append("g")
+.attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")"); 
+ var root = {"name":"india","children":[{"name":"node-1","children":[{"name":"node-2"}]},
+ {"name":"node-2","children":[{"name":"node-3"}]},
+ {"name":" node-4","children":[{"name":"node5"}]},
+ {"name":"node-6","children":[{"name":"node-7"}]},
+ {"name":"node-8","children":[{"name":"node-9"},
+ {"name":"node-10"}]},
+ {"name":"node-11","children":[{"name":"node-12"},
+ {"name":"node-13"}]},{"name":"node-14","children":[{"name":"node-15"}]},
+ {"name":"node-16","children":[{"name":"node-17"}]},
+ {"name":"node-18","children":[{"name":"node-19"}]},
+ {"name":"node-20","children":[{"name":"node-21"}]},
+ {"name":"node-22","children":[{"name":"node-23"}]},
+ {"name":"node-24","children":[{"name":"node-25"},
+ {"name":"node-26"}]},{"name":"node-27","children":[{"name":"node-28"}]}]} ; 
+ var nodes = tree.nodes(root),
+links = tree.links(nodes);
+
+var link = svg.selectAll(".link")
+.data(links)
+.enter().append("path")
+.attr("class", "link")
+.attr("d", diagonal);
+
+var node = svg.selectAll(".node")
+.data(nodes)
+.enter().append("g")
+.attr("class", "node")
+.attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
+.on("mouseover", mouseover)
+.on("mouseout", mouseout);
+
+node.append("circle")
+.attr("r", 4.5)
+.style("fill", "orange")
+
+
+node.append("text")
+.attr("dy", ".31em")
+.attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
+.attr("transform", function(d) { return d.x < 180 ? "translate(8)" : "rotate(180)translate(-8)"; })
+.style("fill", "orange")
+.text(function(d) { return d.name; });
+
+function mouseover() {
+d3.select(this).select("circle").transition()
+
+d3.select(this).select("text").transition()
+.duration(0)
+.attr("dy", ".51em")
+.style("stroke-width", ".15px")
+.style("font", "19px serif")
+.style("opacity", 1);
+}
+
+function mouseout() {
+d3.select(this).select("circle").transition()
+
+
+d3.select(this).select("text").transition()
+.duration(0)
+.attr("dy", ".51em")
+.style("font", "10px serif")
+.style("opacity", 10);
+}
+
+d3.select(self.frameElement).style("height", diameter - 150 + "px");
+
+</script>
+ </body>
+ </html>
